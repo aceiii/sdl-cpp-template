@@ -15,7 +15,8 @@ static bool set_logging_level(const std::string &level_name) {
 
 
 auto run() -> int {
-  auto eventName = [](Uint32 event_type) -> std::string {
+  auto eventName = [](Uint32 event_type) -> std::string_view {
+    static std::string buffer;
     switch (event_type) {
       case SDL_EVENT_QUIT: return "SDL_EVENT_QUIT";
       case SDL_EVENT_WINDOW_SHOWN: return "SDL_EVENT_WINDOW_SHOWN";
@@ -42,7 +43,9 @@ auto run() -> int {
       case SDL_EVENT_WINDOW_ENTER_FULLSCREEN: return "SDL_EVENT_WINDOW_ENTER_FULLSCREEN";
       case SDL_EVENT_WINDOW_LEAVE_FULLSCREEN: return "SDL_EVENT_WINDOW_LEAVE_FULLSCREEN";
       case SDL_EVENT_WINDOW_DESTROYED: return "SDL_EVENT_WINDOW_DESTROYED";
-      default: return std::format("0x{:X}", event_type);
+      default:
+        std::format_to(std::back_inserter(buffer), "0x{:X}", event_type);
+        return buffer;
     }
   };
 
